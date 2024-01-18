@@ -1,72 +1,68 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground, SafeAreaView } from 'react-native';
-import StartGameScreen from './screens/StartGameScreen';
-import GameScreen from './screens/GameScreen';
-import GameOver from './screens/GameOver';
-import { LinearGradient } from 'expo-linear-gradient';
-import Colors from './constants/colors';
-import { useFonts } from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import WelcomeScreen from './screens/WelcomeScreen';
+import UserScreen from './screens/UserScreen';
+import 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
-// import AppLoading from 'expo-app-loading';
-// import SplashScreen from 'expo-splash-screen';
+// drawerNavigator, StackNavigator, BottomTabNavigator, 
+
+
+// const Drawer = createDrawerNavigator();
+const BottomTab = createBottomTabNavigator();
 
 export default function App() {
-
-
-  const [userNumber, setUserNumber] = useState<number | null>(null);
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [guessRounds, setGuessRounds] = useState<number>(0);
-  console.log(guessRounds);
-  
-  const [fontsLoaded] =useFonts({
-    'OpenSans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'OpenSansBold': require('./assets/fonts/OpenSans-Bold.ttf'),
-  })
-  // depecrated
-  // if (!fontsLoaded) {
-  //   return <AppLoading />
-  // }
-
-  const numberMatched = (rounds: number) => {
-    setGuessRounds(rounds);
-    setGameOver(true);
-  }
-  const resetGame = () => {
-    setUserNumber(null);
-    setGameOver(false);
-    setGuessRounds(0);
-  }
-  let screen = userNumber ? 
-  (gameOver? <GameOver handler={resetGame} userNumber={userNumber} guessRounds={guessRounds} />:<GameScreen pickedNumber={userNumber} numberMatched={(rounds)=>{numberMatched(rounds)}} /> ): <StartGameScreen pickedNumber={setUserNumber}/>;
- 
   return (
-    <>
-    <StatusBar style='light' backgroundColor='blue'/>
-    <LinearGradient colors={[Colors.primary700,Colors.secondary500 ]} style={styles.screen}>
-      <ImageBackground source={require('./assets/images/background.png')} resizeMode='cover' style={styles.rootScreen}imageStyle={styles.backgroundImage} >
-        
-        <SafeAreaView style={styles.rootScreen}>
-       {screen}
-       </SafeAreaView>
-      </ImageBackground>
-    </LinearGradient>
-    </>
-  );
+    <NavigationContainer>
+      {/* <Drawer.Navigator initialRouteName='User' */}
+      <BottomTab.Navigator initialRouteName='User'
+        screenOptions={
+          {
+            headerStyle:
+              { backgroundColor: '#320a6b' },
+            headerTintColor: '#fff',
+            // drawerLabel: 'Home Screen',
+            // drawerActiveBackgroundColor: '#320a6b',
+            // drawerActiveTintColor: '#ff0',
+          }
+        }
+      >
+        {/* <Drawer.Screen name="Welcome" component={WelcomeScreen} */}
+        < BottomTab.Screen name="Welcome" component={WelcomeScreen}
+          options={{
+            // drawerLabel: 'Welcome Screen',
+            // drawerIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />
+            tabBarIcon: ({ color }: { color: string }) => <Ionicons name="home" size={24} color={color} />,
+            tabBarActiveTintColor: '#f0f',
+
+
+          }}
+        />
+        <BottomTab.Screen name="User" component={UserScreen}
+          // <Drawer.Screen name="User" component={UserScreen}
+          options={{
+            // drawerLabel: 'User Screen',
+            // drawerIcon: ({ color }) => <Ionicons name="person-circle" size={18} color={color} />
+            tabBarIcon: ({ color }: { color: string }) => <Ionicons name="person-circle" size={24} color={color} />,
+            tabBarActiveTintColor: '#f0f',
+
+          }}
+        />
+      </BottomTab.Navigator>
+    </NavigationContainer>
+  )
 }
-
-const styles = StyleSheet.create({
-  rootScreen: {
-    flex: 1,
-    // backgroundColor: '#ddb52f',
-  },
-  screen: {
-    flex: 1,
-    backgroundColor: '#ddb52f',
-    // marginTop: 24,
-  },
-  backgroundImage: {
-    opacity: 0.2,
-  }
-
-});
+// options={
+//   {
+//   headerStyle:
+//     { backgroundColor: '#320a6b' },
+//   headerTintColor: '#fff',
+//   drawerLabel: 'Welcome Screen',
+//   drawerActiveBackgroundColor: '#320a6b',
+//   drawerActiveTintColor: '#ff0',
+// }
+// } 
